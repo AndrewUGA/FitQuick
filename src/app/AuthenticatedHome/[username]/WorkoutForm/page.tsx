@@ -1,12 +1,14 @@
+//
+//
+//
 "use client";
-import Image from "next/image";
-import Nav from "./components/Nav";
-import NonAuthSplash from "./components/NonAuthSplash";
-import Signup from "./components/Signup";
+import { useParams, useRouter } from "next/navigation";
+import Nav from "../../../components/Nav";
+import WorkoutList from "../../../components/WorkoutList";
+import WorkoutForm from "../../../components/WorkoutForm";
 import { useState } from "react";
-import Link from "next/link";
-import WorkoutList from "./components/WorkoutList";
-import connectMongoDB from "@/libs/mongodb";
+import Style from "./page.module.css";
+
 type Workout = {
   id: number;
   workoutName: string;
@@ -15,7 +17,6 @@ type Workout = {
   imageURL: string;
   notes: string;
 };
-
 const INIT_WORKOUT: Workout[] = [
   {
     id: 1,
@@ -47,12 +48,24 @@ const INIT_WORKOUT: Workout[] = [
 ];
 
 export default function Home() {
-  const navUrl = "/SignUp";
-  connectMongoDB();
+  const { username } = useParams();
+  const signout = "/";
+  const [workouts, setWorkout] = useState<Workout[]>(INIT_WORKOUT);
+
+  const addWorkout = (newWorkout: Workout) => {
+    setWorkout([...workouts, newWorkout]);
+  };
+  const router = useRouter();
+  const close = () => {
+    router.push("./");
+  };
   return (
     <div>
-      <Nav username={null} url={navUrl} />
-      <NonAuthSplash workouts={INIT_WORKOUT} />
+      <Nav username={username as string} url={signout} />
+      <div className={Style.container}>
+        <WorkoutList workouts={workouts} />
+        <WorkoutForm onAddWorkout={addWorkout} onClose={close} />
+      </div>
     </div>
   );
 }

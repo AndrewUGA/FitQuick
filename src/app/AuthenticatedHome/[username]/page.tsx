@@ -1,12 +1,10 @@
 "use client";
-import Image from "next/image";
-import Nav from "./components/Nav";
-import NonAuthSplash from "./components/NonAuthSplash";
-import Signup from "./components/Signup";
+import { useParams } from "next/navigation";
+import Nav from "../../components/Nav";
+import WorkoutList from "../../components/WorkoutList";
 import { useState } from "react";
-import Link from "next/link";
-import WorkoutList from "./components/WorkoutList";
-import connectMongoDB from "@/libs/mongodb";
+import Button from "../../components/Button";
+
 type Workout = {
   id: number;
   workoutName: string;
@@ -47,12 +45,13 @@ const INIT_WORKOUT: Workout[] = [
 ];
 
 export default function Home() {
-  const navUrl = "/SignUp";
-  connectMongoDB();
+  const { username } = useParams();
+  const signout = "/";
   return (
     <div>
-      <Nav username={null} url={navUrl} />
-      <NonAuthSplash workouts={INIT_WORKOUT} />
+      <Nav username={username as string} url={signout} />
+      <Button username={username as string} />
+      <WorkoutList workouts={INIT_WORKOUT} />
     </div>
   );
 }
